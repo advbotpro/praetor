@@ -19,12 +19,13 @@ app.get('/', (req, res) => {
 });
 
 async function analisarPeticao(textoDoDocumento) {
-  const prompt = `Sua tarefa é analisar uma petição inicial ou recurso de um autor e retornar um objeto JSON com "pontuacao", "teses", e "precedentes".
-A pontuação deve ser de 0 a 100, refletindo a chance de sucesso.
-As teses devem resumir os 3 argumentos mais importantes do autor.
-Os precedentes devem ser um **array de 1 ou 2 objetos**, cada objeto com as chaves "id" (um identificador breve, como o número do processo ou o tópico principal) e "resumo" (um breve resumo do fundamento legal aplicável).
-O array de precedentes nunca deve estar vazio ou conter 'undefined'.
-Texto para análise: """${textoDoDocumento.substring(0, 8000)}""" Responda APENAS com o objeto JSON.`;
+  const prompt = `Sua tarefa é analisar uma petição inicial ou recurso de um autor e retornar um objeto JSON com "pontuacao" (0-100), "teses" (array de 3 strings), e "precedentes" (array de 1 ou 2 objetos).
+Cada objeto em "precedentes" DEVE ter as chaves "id" (string, ex: "0014943-56.2023.8.05.0113") e "resumo" (string, um breve resumo do fundamento legal).
+O array de precedentes NUNCA deve estar vazio ou conter 'undefined'. SEJA EXTREMAMENTE ESPECÍFICO ao gerar o JSON.
+Exemplo de formato para "precedentes": [{"id": "Resp. 12345", "resumo": "Dano moral in re ipsa em caso de negativação indevida."}]
+
+Texto para análise: """${textoDoDocumento.substring(0, 8000)}"""
+Responda APENAS com o objeto JSON.`;
 
   try {
     const result = await model.generateContent(prompt);
