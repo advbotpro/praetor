@@ -19,11 +19,16 @@ app.get('/', (req, res) => {
 });
 
 async function analisarPeticao(textoDoDocumento) {
-  const prompt = `Sua tarefa é analisar uma petição inicial ou recurso de um autor e retornar um objeto JSON com "pontuacao" (0-100), "teses" (array de 3 strings), e "precedentes" (array de 1 ou 2 objetos).
-Cada objeto em "precedentes" DEVE ter as chaves "id" (string, ex: "0014943-56.2023.8.05.0113") e "resumo" (string, um breve resumo do fundamento legal).
-O array de precedentes NUNCA deve estar vazio ou conter 'undefined'. SEJA EXTREMAMENTE ESPECÍFICO ao gerar o JSON.
-Exemplo de formato para "precedentes": [{"id": "Resp. 12345", "resumo": "Dano moral in re ipsa em caso de negativação indevida."}]
+  const prompt = `Sua tarefa é analisar uma petição inicial ou recurso de um autor e retornar um objeto JSON com as seguintes chaves e formatos:
+"pontuacao": (número de 0 a 100, chance de sucesso)
+"teses": (array de 3 strings, argumentos mais importantes)
+"precedentes": (array de 1 ou 2 objetos, cada um com "id": string e "resumo": string, de fundamentos legais)
+"valorDaCausa": (string, se identificável no texto, caso contrário "Não especificado")
+"valorDaCondenacao": (string, se identificável no texto, caso contrário "Não especificado")
+"dataAudiencia": (string no formato "DD/MM/AAAA", se identificável no texto, caso contrário "Não especificado")
+"prazoProcessual": (string, se identificável no texto, caso contrário "Não especificado")
 
+O array de precedentes NUNCA deve estar vazio ou conter 'undefined'.
 Texto para análise: """${textoDoDocumento.substring(0, 8000)}"""
 Responda APENAS com o objeto JSON.`;
 
