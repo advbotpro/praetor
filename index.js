@@ -70,38 +70,6 @@ app.post('/v1/analise/peticao', upload.single('arquivo'), async (req, res) => {
   try {
     const data = await pdfparse(req.file.buffer);
     const analise = await analisarPeticao(data.text);
-    const { data: dbData, error: dbError } = await supabase
-  .from('analyses')
-  .insert([
-    {
-      user_id: '0901cb8f-c322-430e-a2e1-d1f33252b1ea', // Usando um user_id fixo como no seu SQL. Idealmente, você o pegaria do seu sistema de autenticação.
-      case_name: 'Análise de Petição', // Você pode pegar do Lovable se ele enviar um nome de caso, ou usar um default.
-      case_description: analise.teses ? analise.teses[0] : '', // Pode usar a primeira tese como descrição
-      success_probability: analise.pontuacao,
-      legal_theses: JSON.stringify(analise.teses), // Converta arrays/objetos para string JSON
-      relevant_precedents: JSON.stringify(analise.precedentes), // Converta arrays/objetos para string JSON
-      recommended_next_steps: '"{]}"', // Não pediu isso no prompt da IA, manter como vazio por agora.
-      analysis_summary: '', // Não pediu isso no prompt da IA, manter como vazio.
-      status: 'concluida', // Status da análise
-
-      // --- MAPEAMENTO DOS NOVOS CAMPOS (CamelCase da IA -> Snake_Case do Supabase) ---
-      valor_da_causa: analise.valorDaCausa || null, // Garante que seja null se a IA não retornar (embora o prompt peça "Não especificado")
-      valor_da_condenacao: analise.valorDaCondenacao || null,
-      data_audiencia: analise.dataAudiencia || null,
-      prazo_processual: analise.prazoProcessual || null,
-      tipo_de_peca: analise.tipoDePeca || 'peticao' // Pegue da IA ou use um default
-      // ----------------------------------------------------------------------------------
-    }
-  ])
-  .select(); // Adicione .select() se quiser que a inserção retorne os dados inseridos
-
-if (dbError) { // Troque 'error' por 'dbError' para evitar conflito de nome
-  console.error("Erro ao inserir no Supabase:", dbError);
-  return res.status(500).json({ error: 'Erro ao salvar a análise no banco de dados.' });
-}
-
-// Retorne o JSON completo para o frontend, se necessário
-  res.json(analise);
     res.json(analise);
   } catch (error) {
     res.status(500).json({ error: 'Erro ao processar o PDF.' });
