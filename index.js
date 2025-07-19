@@ -101,6 +101,7 @@ if (dbError) { // Troque 'error' por 'dbError' para evitar conflito de nome
 }
 
 // Retorne o JSON completo para o frontend, se necessário
+  res.json(analise);
     res.json(analise);
   } catch (error) {
     res.status(500).json({ error: 'Erro ao processar o PDF.' });
