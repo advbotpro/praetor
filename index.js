@@ -31,6 +31,7 @@ Responda APENAS com o objeto JSON.`;
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const rawText = response.text();
+    console.log("Resposta bruta da IA:", rawText);
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error("Resposta da IA não é um JSON válido.");
     return JSON.parse(jsonMatch[0]);
