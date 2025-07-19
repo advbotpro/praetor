@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  api: # Nome do seu serviço dentro da Stack. Mantenha simples.
+    build: . # Constrói a imagem a partir do Dockerfile neste contexto (repositório Git)
+    ports:
+      - "3001:3000" # Mapeia a porta 3001 da VPS para a porta 3000 do contêiner
+    restart: unless-stopped # Garante que o contêiner reinicie se parar
+    environment:
+      - API_KEY=AIzaSyCJns5JfhcVa6wepwcUCaVnkhnD-JFxP4U # Chave da API
